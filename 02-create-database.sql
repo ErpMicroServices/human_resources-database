@@ -67,3 +67,14 @@ create table if not exists position_fulfillment(
   accepted_by_person uuid not null,
   CONSTRAINT position_fulfillment_pk PRIMARY key(id)
 );
+
+create table if not exists positition_reporting_structure(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  comment text,
+  primary_flag boolean,
+  reports_to uuid not null references position(id),
+  manage_by uuid not null references position(id),
+  CONSTRAINT positition_reporting_structure_pk PRIMARY key(id)
+);
