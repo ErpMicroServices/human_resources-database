@@ -26,5 +26,10 @@ create table if not exists position(
 
 create table if not exists position_responsibility(
   id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  comment text,
+  associated_with_position uuid not null references position(id),
+  defined_by uuid not null references responsibility_type(id),
   CONSTRAINT position_responsibility_pk PRIMARY key(id)
 );
