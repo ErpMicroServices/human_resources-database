@@ -78,3 +78,48 @@ create table if not exists positition_reporting_structure(
   manage_by uuid not null references position(id),
   CONSTRAINT positition_reporting_structure_pk PRIMARY key(id)
 );
+
+create table if not exists rate_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT rate_type_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT rate_type_type_pk PRIMARY key(id)
+);
+
+create table if not exists pay_grade (
+  id uuid DEFAULT uuid_generate_v4(),
+  name text not null CONSTRAINT pay_grade_name_not_empty CHECK (name <> ''),
+  description text,
+  CONSTRAINT pay_grade_pk PRIMARY key(id)
+);
+
+create table if not exists salary_step(
+  id uuid DEFAULT uuid_generate_v4(),
+  step_sequence_id bigint not null default 1,
+  amount double precision not null,
+  date_modified date not null default current_date,
+  part_of_pay_grade uuid not null references pay_grade(id),
+  CONSTRAINT salary_step_pk PRIMARY key(id)
+);
+create table if not exists position_type_rate(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  rate double precision,
+  for_position_type uuid not null references position_type(id),
+  for_rate_type uuid not null references rate_type(id),
+  associated_with_salary_step uuid not null references salary_step(id),
+  for_period_type uuid not null,
+  CONSTRAINT position_type_rate_pk PRIMARY key(id)
+);
+
+create table if not exists pay_history(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  amount double precision,
+  comment text,
+  for_period_type uuid not null,
+  assoicated_with_salary_step uuid not null references salary_step(id),
+  record_for_employment_roie uuid not null,
+  CONSTRAINT pay_history_pk PRIMARY key(id)
+);
