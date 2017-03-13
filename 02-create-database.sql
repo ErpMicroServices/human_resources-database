@@ -123,3 +123,19 @@ create table if not exists pay_history(
   record_for_employment_roie uuid not null,
   CONSTRAINT pay_history_pk PRIMARY key(id)
 );
+
+create table if not exists benefity_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT benefit_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT benefit_type_pk PRIMARY key(id)
+);
+
+create table if not exists party_benefit(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  cost double precision,
+  actual_employer_paid_percent double precision,
+  available_time timestamp,
+  CONSTRAINT party_benefit_pk PRIMARY key(id)
+);
