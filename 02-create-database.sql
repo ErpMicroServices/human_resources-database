@@ -139,3 +139,39 @@ create table if not exists party_benefit(
   available_time timestamp,
   CONSTRAINT party_benefit_pk PRIMARY key(id)
 );
+
+create table if not exists deduction_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT deduction_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT deduction_type_pk PRIMARY key(id)
+);
+
+create table if not exists payment_method_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT payment_method_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT payment_method_type_pk PRIMARY key(id)
+);
+
+create table if not exists deduction(
+  id uuid DEFAULT uuid_generate_v4(),
+  amount double precision,
+  reduction_of_paycheck uuid not null,
+  definect_by uuid not null references deduction_type (id),
+  CONSTRAINT deduction_pk PRIMARY key(id)
+);
+
+create table if not exists payroll_preferences(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  percentage double precision,
+  flat_amount double precision,
+  routing_number text,
+  account_number text,
+  bank_name text,
+  for_employee_roll uuid not null,
+  of_internal_organization_roll uuid not null,
+  defined_by uuid not null references payment_method_type(id),
+  period_type uuid not null,
+  CONSTRAINT payrool_preferences_pk PRIMARY key(id)
+);
