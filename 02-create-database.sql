@@ -4,6 +4,12 @@ create table if not exists position_type(
   CONSTRAINT position_type_pk PRIMARY key(id)
 );
 
+create table if not exists position_status_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT position_status_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT position_status_type_pk PRIMARY key(id)
+);
+
 create table if not exists responsibility_type(
   id uuid DEFAULT uuid_generate_v4(),
   description text not null CONSTRAINT responsibility_type_description_not_empty CHECK (description <> ''),
@@ -21,6 +27,8 @@ create table if not exists position(
   actual_thru_date date,
   approved_thru uuid not null,
   described_by uuid not null references position_type(id),
+  in_the_state_of uuid not null references position_status_type(id),
+  within_organization uuid not null,
   CONSTRAINT position_pk PRIMARY key(id)
 );
 
@@ -48,4 +56,14 @@ create table if not exists position_type_class(
   for_position_type uuid not null references position_type (id),
   defined_by uuid not null references position_classification_type(id),
   CONSTRAINT _pk PRIMARY key(id)
+);
+
+create table if not exists position_fulfillment(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  comment text,
+  fullfilment_of uuid not null references position(id),
+  accepted_by_person uuid not null,
+  CONSTRAINT position_fulfillment_pk PRIMARY key(id)
 );
