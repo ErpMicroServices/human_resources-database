@@ -55,7 +55,7 @@ create table if not exists position_type_class(
   standard_hours_per_week bigint not null default 40,
   for_position_type uuid not null references position_type (id),
   defined_by uuid not null references position_classification_type(id),
-  CONSTRAINT _pk PRIMARY key(id)
+  CONSTRAINT position_type_class_pk PRIMARY key(id)
 );
 
 create table if not exists position_fulfillment(
@@ -240,4 +240,53 @@ create table if not exists resume(
   resume_date date not null default current_date,
   resume_text text not null constraint resume_text_not_empty check (resume_text <> ''),
   CONSTRAINT resume_pk PRIMARY key(id)
+);
+
+create table if not exists performance_review_item_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT performance_review_item_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT performance_review_item_type_pk PRIMARY key(id)
+);
+
+create table if not exists rating_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT rating_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT rating_type_pk PRIMARY key(id)
+);
+
+create table if not exists performance_note_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT performance_note_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT performance_note_type_pk PRIMARY key(id)
+);
+
+create table if not exists performance_review(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  comment text not null,
+  affecting_pay_history uuid not null references pay_history(id),
+  resulting_in_a_bonuse_of uuid,
+  resulting_ing_position uuid references position(id),
+  from_manager_role uuid not null,
+  for_employee_role uuid not null,
+  CONSTRAINT performance_review_pk PRIMARY key(id)
+);
+
+create table if not exists performance_view_item(
+  id uuid DEFAULT uuid_generate_v4(),
+  sequence_id bigint not null default 1,
+  comment text,
+  described_by uuid not null references performance_review_item_type(id),
+  scored_using uuid not null references rating_type(id),
+  CONSTRAINT performance_view_item_pk PRIMARY key(id)
+);
+
+create table if not exists performance_note(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  communication_date date not null default current_date,
+  comment text not null constraint performance_note_comment_not_empty check(comment <> ''),
+  CONSTRAINT performance_note_pk PRIMARY key(id)
 );
