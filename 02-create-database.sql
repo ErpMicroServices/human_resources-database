@@ -198,3 +198,46 @@ create table if not exists employment_application(
   for_the_position_of uuid not null references position(id),
   CONSTRAINT employment_application_pk PRIMARY key(id)
 );
+
+create table if not exists qualification_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT qualification_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT qualification_type_pk PRIMARY key(id)
+);
+
+create table if not exists skill_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT skill_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT skill_type_pk PRIMARY key(id)
+);
+
+create table if not exists training_class_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT training_class_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT training_class_type_pk PRIMARY key(id)
+);
+
+create table if not exists party_qualification(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  held_by_party uuid not null,
+  described_by uuid not null references qualification_type,
+  CONSTRAINT party_qualification_pk PRIMARY key(id)
+);
+
+create table if not exists person_training(
+  id uuid DEFAULT uuid_generate_v4(),
+  from_date date not null default current_date,
+  thru_date date,
+  received_by_person uuid not null,
+  described_by uuid not null references training_class_type(id),
+  CONSTRAINT person_training_pk PRIMARY key(id)
+);
+
+create table if not exists resume(
+  id uuid DEFAULT uuid_generate_v4(),
+  resume_date date not null default current_date,
+  resume_text text not null constraint resume_text_not_empty check (resume_text <> ''),
+  CONSTRAINT resume_pk PRIMARY key(id)
+);
