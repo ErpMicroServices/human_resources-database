@@ -175,3 +175,26 @@ create table if not exists payroll_preferences(
   period_type uuid not null,
   CONSTRAINT payrool_preferences_pk PRIMARY key(id)
 );
+
+create table if not exists employment_application_status_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT employment_application_status_type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT employment_application_status_type_pk PRIMARY key(id)
+);
+
+create table if not exists employment_application_source_type(
+  id uuid DEFAULT uuid_generate_v4(),
+  description text not null CONSTRAINT _type_description_not_empty CHECK (description <> ''),
+  CONSTRAINT _type_pk PRIMARY key(id)
+);
+
+create table if not exists employment_application(
+  id uuid DEFAULT uuid_generate_v4(),
+  application_date date not null default current_date,
+  referred_by_party uuid,
+  from_person uuid not null,
+  received_as_a_result_of uuid not null references employment_application_source_type(id),
+  status_of uuid not null references employment_application_status_type(id),
+  for_the_position_of uuid not null references position(id),
+  CONSTRAINT employment_application_pk PRIMARY key(id)
+);
