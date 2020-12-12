@@ -1,4 +1,4 @@
-FROM postgres:9.6.1
+FROM postgres:10
 
 ENV POSTGRES_DB=human-resources_database
 ENV POSTGRES_USER=human-resources_database
