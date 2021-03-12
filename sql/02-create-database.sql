@@ -84,7 +84,7 @@ create table if not exists position_fulfillment
     from_date          date not null default current_date,
     thru_date          date,
     comment            text,
-    fulfilment_of      uuid not null references position (id),
+    position_id        uuid not null references position (id),
     accepted_by_person uuid not null,
     CONSTRAINT position_fulfillment_pk PRIMARY key (id)
 );
