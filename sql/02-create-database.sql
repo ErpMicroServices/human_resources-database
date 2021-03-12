@@ -112,11 +112,11 @@ create table if not exists rate_type
 
 create table if not exists pay_grade
 (
-    id          uuid DEFAULT uuid_generate_v4(),
-    name        text not null
+    id        uuid DEFAULT uuid_generate_v4(),
+    name      text not null
         CONSTRAINT pay_grade_name_not_empty CHECK (name <> ''),
-    description text,
-    parent_id   UUID REFERENCES pay_grade (id),
+    comment   text,
+    parent_id UUID REFERENCES pay_grade (id),
     CONSTRAINT pay_grade_pk PRIMARY key (id)
 );
 
@@ -129,6 +129,15 @@ create table if not exists salary_step
     pay_grade_id     uuid           not null references pay_grade (id),
     CONSTRAINT salary_step_pk PRIMARY key (id)
 );
+
+create table if not exists period_type
+(
+    id          uuid DEFAULT uuid_generate_v4(),
+    description text,
+    parent_id   UUID REFERENCES period_type (id),
+    constraint period_type_pk primary key (id)
+);
+
 create table if not exists position_type_rate
 (
     id               uuid          DEFAULT uuid_generate_v4(),
@@ -136,22 +145,22 @@ create table if not exists position_type_rate
     thru_date        date,
     rate             numeric(17, 2),
     position_type_id uuid not null references position_type (id),
-    rate_type_id     uuid not null references rate_type (id),
+    type_id          uuid not null references rate_type (id),
     salary_step_id   uuid not null references salary_step (id),
-    period_type_id   uuid not null,
+    period_type_id   uuid not null references period_type (id),
     CONSTRAINT position_type_rate_pk PRIMARY key (id)
 );
 
 create table if not exists pay_history
 (
-    id                 uuid          DEFAULT uuid_generate_v4(),
-    from_date          date not null default current_date,
-    thru_date          date,
-    amount             numeric(17, 2),
-    comment            text,
-    period_type_id     uuid not null,
-    salary_step_id     uuid not null references salary_step (id),
-    employment_role_id uuid not null,
+    id                               uuid          DEFAULT uuid_generate_v4(),
+    from_date                        date not null default current_date,
+    thru_date                        date,
+    amount                           numeric(17, 2),
+    comment                          text,
+    period_type_id                   uuid not null references period_type (id),
+    salary_step_id                   uuid not null references salary_step (id),
+    employment_party_relationship_id uuid not null,
     CONSTRAINT pay_history_pk PRIMARY key (id)
 );
 
@@ -215,7 +224,7 @@ create table if not exists payroll_preferences
     employee_id              uuid not null,
     internal_organization_id uuid not null,
     type_id                  uuid not null references payment_method_type (id),
-    period_type_id           uuid not null,
+    period_type_id           uuid not null references period_type (id),
     CONSTRAINT payroll_preferences_pk PRIMARY key (id)
 );
 
