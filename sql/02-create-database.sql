@@ -164,23 +164,26 @@ create table if not exists pay_history
     CONSTRAINT pay_history_pk PRIMARY key (id)
 );
 
-create table if not exists benefit_type
+create table if not exists party_benefit_type
 (
     id          uuid DEFAULT uuid_generate_v4(),
     description text not null
-        CONSTRAINT benefit_type_description_not_empty CHECK (description <> ''),
-    parent_id   UUID REFERENCES benefit_type (id),
-    CONSTRAINT benefit_type_pk PRIMARY key (id)
+        CONSTRAINT party_benefit_type_not_empty CHECK (description <> ''),
+    parent_id   UUID REFERENCES party_benefit_type (id),
+    CONSTRAINT party_benefit_type_pk PRIMARY key (id)
 );
 
 create table if not exists party_benefit
 (
-    id                           uuid          DEFAULT uuid_generate_v4(),
-    from_date                    date not null default current_date,
-    thru_date                    date,
-    cost                         numeric(17, 2),
-    actual_employer_paid_percent numeric(17, 2),
-    available_time               timestamp,
+    id                               uuid          DEFAULT uuid_generate_v4(),
+    from_date                        date not null default current_date,
+    thru_date                        date,
+    cost                             numeric(17, 2),
+    actual_employer_paid_percent     numeric(17, 2),
+    available_time                   interval,
+    employment_party_relationship_id uuid not null,
+    period_type_id                   uuid not null references period_type (id),
+    type_id                          uuid not null references party_benefit_type (id),
     CONSTRAINT party_benefit_pk PRIMARY key (id)
 );
 
