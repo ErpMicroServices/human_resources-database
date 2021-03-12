@@ -1,12 +1,13 @@
 create table if not exists position_type
 (
-    id              uuid DEFAULT uuid_generate_v4(),
-    description     text         not null
+    id                   uuid DEFAULT uuid_generate_v4(),
+    description          text         not null
         CONSTRAINT position_type_description_not_empty CHECK (description <> ''),
-    title           varchar(255) not null
+    title                varchar(255) not null
         CONSTRAINT position_type_title_not_empty CHECK (title <> ''),
-    benefit_percent bigint check ( (benefit_percent >= 0) and (benefit_percent <= 100)),
-    parent_id       UUID REFERENCES position_type (id),
+    benefit_percent      bigint check ( (benefit_percent >= 0) and (benefit_percent <= 100)),
+    organization_role_id uuid,
+    parent_id            UUID REFERENCES position_type (id),
     CONSTRAINT position_type_pk PRIMARY key (id)
 );
 
@@ -72,8 +73,8 @@ create table if not exists position_type_class
     from_date               date   not null default current_date,
     thru_date               date,
     standard_hours_per_week bigint not null default 40,
-    type_id                 uuid   not null references position_type (id),
-    defined_by              uuid   not null references position_classification_type (id),
+    type_id                 uuid   not null references position_type_class (id),
+    position_type_id        uuid   not null references position_type (id),
     CONSTRAINT position_type_class_pk PRIMARY key (id)
 );
 
