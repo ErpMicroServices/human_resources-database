@@ -379,16 +379,18 @@ create table if not exists performance_review
     position_id      uuid references position (id),
     manager_role_id  uuid not null,
     employee_role_id uuid not null,
+    paycheck_id      uuid,
     CONSTRAINT performance_review_pk PRIMARY key (id)
 );
 
-create table if not exists performance_view_item
+create table if not exists performance_review_item
 (
-    id             uuid            DEFAULT uuid_generate_v4(),
-    sequence_id    bigint not null default 1,
-    comment        text,
-    type_id        uuid   not null references performance_review_item_type (id),
-    rating_type_id uuid   not null references rating_type (id),
+    id                    uuid            DEFAULT uuid_generate_v4(),
+    performance_review_id uuid   not null references performance_review (id),
+    sequence              bigint not null default 1,
+    comment               text,
+    type_id               uuid   not null references performance_review_item_type (id),
+    rating_type_id        uuid   not null references rating_type (id),
     CONSTRAINT performance_view_item_pk PRIMARY key (id)
 );
 
@@ -400,6 +402,9 @@ create table if not exists performance_note
     communication_date date not null default current_date,
     comment            text not null
         constraint performance_note_comment_not_empty check (comment <> ''),
+    manager_role_id    uuid not null,
+    employee_role_id   uuid not null,
+    type_id            uuid not null references performance_note_type (id),
     CONSTRAINT performance_note_pk PRIMARY key (id)
 );
 
