@@ -290,6 +290,17 @@ create table if not exists skill_type
     CONSTRAINT skill_type_pk PRIMARY key (id)
 );
 
+create table if not exists party_skill
+(
+    id                 uuid DEFAULT uuid_generate_v4(),
+    started_using_date date,
+    years_experience   int,
+    skill_level        varchar(255),
+    party_id           UUID not null,
+    type_id            uuid not null references skill_type (id),
+    CONSTRAINT party_skill_pk PRIMARY key (id)
+);
+
 create table if not exists training_class_type
 (
     id          uuid DEFAULT uuid_generate_v4(),
@@ -316,6 +327,7 @@ create table if not exists person_training
     thru_date             date,
     received_by_person_id uuid not null,
     type_id               uuid not null references training_class_type (id),
+    party_id              uuid not null,
     CONSTRAINT person_training_pk PRIMARY key (id)
 );
 
@@ -325,6 +337,7 @@ create table if not exists resume
     resume_date date not null default current_date,
     resume_text text not null
         constraint resume_text_not_empty check (resume_text <> ''),
+    party_id    uuid not null,
     CONSTRAINT resume_pk PRIMARY key (id)
 );
 
