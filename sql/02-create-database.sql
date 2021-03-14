@@ -418,3 +418,48 @@ create table if not exists valid_responsibility
     responsibility_type_id uuid not null references responsibility_type (id),
     CONSTRAINT valid_responsibility_pk PRIMARY key (id)
 );
+
+create table if not exists termination_type
+(
+    id          uuid DEFAULT uuid_generate_v4(),
+    description text not null
+        CONSTRAINT termination_type_description_not_empty CHECK (description <> ''),
+    parent_id   UUID REFERENCES termination_type (id),
+    CONSTRAINT ptermination_type_pk PRIMARY key (id)
+);
+
+create table if not exists termination_reason
+(
+    id          uuid DEFAULT uuid_generate_v4(),
+    description text not null
+        CONSTRAINT termination_reason_description_not_empty CHECK (description <> ''),
+    parent_id   UUID REFERENCES payment_method_type (id),
+    CONSTRAINT termination_reason_pk PRIMARY key (id)
+);
+create table if not exists unemployment_claim_status_type
+(
+    id          uuid DEFAULT uuid_generate_v4(),
+    description text not null
+        CONSTRAINT unemployment_claim_status_typen_description_not_empty CHECK (description <> ''),
+    parent_id   UUID REFERENCES unemployment_claim_status_type (id),
+    CONSTRAINT unemployment_claim_status_type_pk PRIMARY key (id)
+);
+
+create table if not exists employment
+(
+    id                    uuid DEFAULT uuid_generate_v4(),
+    party_relationship_id uuid not null,
+    termination_type_id   uuid references termination_type (id),
+    reason_id             uuid references termination_reason (id),
+    constraint employment_pk primary key (id)
+);
+create table if not exists unemployment_claim
+(
+    id                      uuid          DEFAULT uuid_generate_v4(),
+    description             text not null
+        CONSTRAINT unemployment_claim_description_not_empty CHECK (description <> ''),
+    unemployment_claim_date date not null default current_date,
+    status_id               uuid not null references unemployment_claim_status_type (id),
+    employment_id           uuid not null references employment (id),
+    constraint unemployment_claim_pk primary key (id)
+);
