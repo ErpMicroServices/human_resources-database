@@ -67,6 +67,15 @@ create table if not exists position_classification_type
     CONSTRAINT position_classification_type_pk PRIMARY key (id)
 );
 
+create table if not exists deduction_type
+(
+    id          uuid DEFAULT uuid_generate_v4(),
+    description text not null
+        CONSTRAINT deduction_type_description_not_empty CHECK (description <> ''),
+    parent_id   UUID REFERENCES deduction_type (id),
+    CONSTRAINT deduction_type_pk PRIMARY key (id)
+);
+
 create table if not exists position_type_class
 (
     id                      uuid            DEFAULT uuid_generate_v4(),
@@ -214,20 +223,22 @@ create table if not exists deduction
     CONSTRAINT deduction_pk PRIMARY key (id)
 );
 
-create table if not exists payroll_preferences
+create table if not exists payroll_preference
 (
-    id                       uuid          DEFAULT uuid_generate_v4(),
-    from_date                date not null default current_date,
-    thru_date                date,
-    percentage               numeric(17, 2),
-    flat_amount              numeric(17, 2),
-    routing_number           text,
-    account_number           text,
-    bank_name                text,
-    employee_id              uuid not null,
-    internal_organization_id uuid not null,
-    type_id                  uuid not null references payment_method_type (id),
-    period_type_id           uuid not null references period_type (id),
+    id                            uuid          DEFAULT uuid_generate_v4(),
+    from_date                     date not null default current_date,
+    thru_date                     date,
+    percentage                    numeric(17, 2),
+    flat_amount                   numeric(17, 2),
+    routing_number                text,
+    account_number                text,
+    bank_name                     text,
+    employee_role_id              uuid not null,
+    internal_organization_role_id uuid not null,
+    type_id                       uuid not null references payment_method_type (id),
+    period_type_id                uuid not null references period_type (id),
+    payment_method_type_id        uuid not null,
+    deduction_type_id             uuid not null references deduction_type (id),
     CONSTRAINT payroll_preferences_pk PRIMARY key (id)
 );
 
