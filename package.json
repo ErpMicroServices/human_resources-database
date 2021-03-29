@@ -1,17 +1,17 @@
 {
-  "name": "human_resources-database",
-  "version": "0.0.0",
-  "description": "Data for the domain",
-  "author": {
-    "name": "Jim Barrows",
-    "email": "Jim.Barrows@gmail.copm"
-  },
-  "license": "Apache-2.0",
-  "scripts": {
-    "build": "npm run build:database; npm run build:docker",
-    "build:docker": "docker build --tag erpmicroservices/human_resources-database --rm .",
-    "build:database": "mkdir -p build;liquibase-3.5.3-bin/liquibase --changeLogFile=./database_change_log.yml --url='offline:postgresql' updateSql > build/database_up.sql",
-    "clean": "rm -rf build; rm -rf generated-sql;yes | docker rmi erpmicroservices/human_resources-database; yes | docker volume prune; docker rm human_resources-database",
+	"name": "human_resources-database",
+	"version": "1.0.0",
+	"description": "Data for the Human Resources domain",
+	"author": {
+		"name": "Jim Barrows",
+		"email": "Jim.Barrows@gmail.copm"
+	},
+	"license": "Apache-2.0",
+	"scripts": {
+		"build": "npm run build:database; npm run build:docker",
+		"build:docker": "docker build --tag erpmicroservices/human_resources-database --rm .",
+		"build:database": "mkdir -p build;liquibase-3.5.3-bin/liquibase --changeLogFile=./database_change_log.yml --url='offline:postgresql' updateSql > build/database_up.sql",
+		"clean": "rm -rf build; rm -rf generated-sql;yes | docker rmi erpmicroservices/human_resources-database; yes | docker volume prune; docker rm human_resources-database",
     "update_database": "liquibase-3.5.3-bin/liquibase --changeLogFile=./database_change_log.yml --url='jdbc:postgresql://localhost/invoice' --username=human_resources --password=human_resources update",
     "push": "docker push erpmicroservices/human_resources-database:latest",
     "start": "docker run --publish 5432:5432 --name human_resources-database erpmicroservices/human_resources-database",
