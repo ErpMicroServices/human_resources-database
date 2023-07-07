@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/ErpMicroServices/human-resources-database#readme",
   "devDependencies": {
-		"@cucumber/cucumber": "^7.0.0",
+		"@cucumber/cucumber": "^7.3.2",
 		"babel-cli": "^6.23.0",
 		"babel-preset-es2015": "^6.22.0",
 		"braces": ">=2.3.1",
